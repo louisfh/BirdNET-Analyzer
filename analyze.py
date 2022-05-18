@@ -53,7 +53,7 @@ def loadLabels(labels_file):
     labels = []
     with open(labels_file, 'r') as lfile:
         for line in lfile.readlines():
-            labels.append(line.replace('\n', ''))    
+            labels.append(line.replace('\n', ''))
 
     return labels
 
@@ -94,24 +94,24 @@ def saveResultFile(r, path, afile_path):
 
         # Write header
         out_string += header
-        
+
         # Extract valid predictions for every timestamp
         for timestamp in sorted(r):
             rstring = ''
             start, end = timestamp.split('-')
             for c in r[timestamp]:
-                if c[1] > cfg.MIN_CONFIDENCE and c[0] in cfg.CODES and (c[0] in cfg.SPECIES_LIST or len(cfg.SPECIES_LIST) == 0):
-                    selection_id += 1
-                    label = cfg.TRANSLATED_LABELS[cfg.LABELS.index(c[0])]
-                    rstring += '{}\tSpectrogram 1\t1\t{}\t{}\t{}\t{}\t{}\t{}\t{:.4f}\n'.format(
-                        selection_id, 
-                        start, 
-                        end, 
-                        150, 
-                        12000, 
-                        cfg.CODES[c[0]], 
-                        label.split('_')[1], 
-                        c[1])
+                #if c[1] > cfg.MIN_CONFIDENCE and c[0] in cfg.CODES and (c[0] in cfg.SPECIES_LIST or len(cfg.SPECIES_LIST) == 0):
+                selection_id += 1
+                label = cfg.TRANSLATED_LABELS[cfg.LABELS.index(c[0])]
+                rstring += '{}\tSpectrogram 1\t1\t{}\t{}\t{}\t{}\t{}\t{}\t{:.4f}\n'.format(
+                    selection_id,
+                    start,
+                    end,
+                    150,
+                    12000,
+                    cfg.CODES[c[0]],
+                    label.split('_')[1],
+                    c[1])
 
             # Write result string to file
             if len(rstring) > 0:
@@ -126,8 +126,8 @@ def saveResultFile(r, path, afile_path):
                 if c[1] > cfg.MIN_CONFIDENCE and c[0] in cfg.CODES and (c[0] in cfg.SPECIES_LIST or len(cfg.SPECIES_LIST) == 0):
                     label = cfg.TRANSLATED_LABELS[cfg.LABELS.index(c[0])]
                     rstring += '{}\t{}\t{:.4f}\n'.format(
-                        timestamp.replace('-', '\t'), 
-                        label.replace('_', ', '), 
+                        timestamp.replace('-', '\t'),
+                        label.replace('_', ', '),
                         c[1])
 
             # Write result string to file
@@ -144,7 +144,7 @@ def saveResultFile(r, path, afile_path):
             rstring = ''
             start, end = timestamp.split('-')
             for c in r[timestamp]:
-                if c[1] > cfg.MIN_CONFIDENCE and c[0] in cfg.CODES and (c[0] in cfg.SPECIES_LIST or len(cfg.SPECIES_LIST) == 0):                    
+                if c[1] > cfg.MIN_CONFIDENCE and c[0] in cfg.CODES and (c[0] in cfg.SPECIES_LIST or len(cfg.SPECIES_LIST) == 0):
                     label = cfg.TRANSLATED_LABELS[cfg.LABELS.index(c[0])]
                     rstring += '\n{},{},{},{},{},{:.4f},{:.4f},{:.4f},{},{},{},{},{},{}'.format(
                         afile_path,
@@ -176,16 +176,16 @@ def saveResultFile(r, path, afile_path):
 
         for timestamp in sorted(r):
             rstring = ''
-            for c in r[timestamp]:                
+            for c in r[timestamp]:
                 start, end = timestamp.split('-')
-                if c[1] > cfg.MIN_CONFIDENCE and c[0] in cfg.CODES and (c[0] in cfg.SPECIES_LIST or len(cfg.SPECIES_LIST) == 0):
-                    label = cfg.TRANSLATED_LABELS[cfg.LABELS.index(c[0])]
-                    rstring += '{},{},{},{},{:.4f}\n'.format(
-                        start,
-                        end,
-                        label.split('_')[0],
-                        label.split('_')[1],
-                        c[1])
+                #if c[1] > cfg.MIN_CONFIDENCE and c[0] in cfg.CODES and (c[0] in cfg.SPECIES_LIST or len(cfg.SPECIES_LIST) == 0):
+                label = cfg.TRANSLATED_LABELS[cfg.LABELS.index(c[0])]
+                rstring += '{},{},{},{},{:.4f}\n'.format(
+                    start,
+                    end,
+                    label.split('_')[0],
+                    label.split('_')[1],
+                    c[1])
 
             # Write result string to file
             if len(rstring) > 0:
@@ -255,7 +255,7 @@ def analyzeFile(item):
             start += cfg.SIG_LENGTH - cfg.SIG_OVERLAP
             end = start + cfg.SIG_LENGTH
 
-            # Check if batch is full or last chunk        
+            # Check if batch is full or last chunk
             if len(samples) < cfg.BATCH_SIZE and c < len(chunks) - 1:
                 continue
 
@@ -282,7 +282,7 @@ def analyzeFile(item):
 
             # Clear batch
             samples = []
-            timestamps = []  
+            timestamps = []
     except:
         # Print traceback
         print(traceback.format_exc(), flush=True)
@@ -291,7 +291,7 @@ def analyzeFile(item):
         msg = 'Error: Cannot analyze audio file {}.\n{}'.format(fpath, traceback.format_exc())
         print(msg, flush=True)
         writeErrorLog(msg)
-        return False     
+        return False
 
     # Save as selection table
     try:
@@ -304,14 +304,14 @@ def analyzeFile(item):
             rpath = fpath.replace(cfg.INPUT_PATH, '')
             rpath = rpath[1:] if rpath[0] in ['/', '\\'] else rpath
             if cfg.RESULT_TYPE == 'table':
-                rtype = '.BirdNET.selection.table.txt' 
+                rtype = '.BirdNET.selection.table.txt'
             elif cfg.RESULT_TYPE == 'audacity':
                 rtype = '.BirdNET.results.txt'
             else:
                 rtype = '.BirdNET.results.csv'
             saveResultFile(results, os.path.join(cfg.OUTPUT_PATH, rpath.rsplit('.', 1)[0] + rtype), fpath)
         else:
-            saveResultFile(results, cfg.OUTPUT_PATH, fpath)        
+            saveResultFile(results, cfg.OUTPUT_PATH, fpath)
     except:
 
         # Print traceback
@@ -372,7 +372,7 @@ if __name__ == '__main__':
     if not args.locale in ['en'] and os.path.isfile(lfile):
         cfg.TRANSLATED_LABELS = loadLabels(lfile)
     else:
-        cfg.TRANSLATED_LABELS = cfg.LABELS   
+        cfg.TRANSLATED_LABELS = cfg.LABELS
 
     ### Make sure to comment out appropriately if you are not using args. ###
 
@@ -391,21 +391,21 @@ if __name__ == '__main__':
         predictSpeciesList()
     if len(cfg.SPECIES_LIST) == 0:
         print('Species list contains {} species'.format(len(cfg.LABELS)))
-    else:        
+    else:
         print('Species list contains {} species'.format(len(cfg.SPECIES_LIST)))
 
-    # Set input and output path    
+    # Set input and output path
     cfg.INPUT_PATH = args.i
     cfg.OUTPUT_PATH = args.o
 
     # Parse input files
     if os.path.isdir(cfg.INPUT_PATH):
-        cfg.FILE_LIST = parseInputFiles(cfg.INPUT_PATH)  
+        cfg.FILE_LIST = parseInputFiles(cfg.INPUT_PATH)
     else:
         cfg.FILE_LIST = [cfg.INPUT_PATH]
 
     # Set confidence threshold
-    cfg.MIN_CONFIDENCE = max(0.01, min(0.99, float(args.min_conf)))
+    cfg.MIN_CONFIDENCE = 0
 
     # Set sensitivity
     cfg.SIGMOID_SENSITIVITY = max(0.5, min(1.0 - (float(args.sensitivity) - 1.0), 1.5))
@@ -414,7 +414,7 @@ if __name__ == '__main__':
     cfg.SIG_OVERLAP = max(0.0, min(2.9, float(args.overlap)))
 
     # Set result type
-    cfg.RESULT_TYPE = args.rtype.lower()    
+    cfg.RESULT_TYPE = args.rtype.lower()
     if not cfg.RESULT_TYPE in ['table', 'audacity', 'r', 'csv']:
         cfg.RESULT_TYPE = 'table'
 
@@ -437,7 +437,7 @@ if __name__ == '__main__':
     for f in cfg.FILE_LIST:
         flist.append((f, cfg.getConfig()))
 
-    # Analyze files   
+    # Analyze files
     if cfg.CPU_THREADS < 2:
         for entry in flist:
             analyzeFile(entry)
@@ -450,4 +450,3 @@ if __name__ == '__main__':
     # python3 analyze.py --i example/ --o example/ --slist example/ --min_conf 0.5 --threads 4
     # python3 analyze.py --i example/soundscape.wav --o example/soundscape.BirdNET.selection.table.txt --slist example/species_list.txt --threads 8
     # python3 analyze.py --i example/ --o example/ --lat 42.5 --lon -76.45 --week 4 --sensitivity 1.0 --rtype table --locale de
-    
