@@ -38,7 +38,7 @@ def parseFolders(apath, rpath, allowed_filetypes={'audio': ['wav', 'flac', 'mp3'
     # Get all audio files
     for root, dirs, files in os.walk(apath):
         for f in files:
-            if f.split('.')[-1] in allowed_filetypes['audio']:
+            if f.split('.')[-1].lower() in allowed_filetypes['audio']:
                 data[f.rsplit('.', 1)[0]] = {'audio': os.path.join(root, f), 'result': ''}
 
     # Get all result files
@@ -185,7 +185,7 @@ def extractSegments(item):
                 # Make output path
                 outpath = os.path.join(cfg.OUTPUT_PATH, seg['species'])
                 if not os.path.exists(outpath):
-                    os.makedirs(outpath)
+                    os.makedirs(outpath, exist_ok=True)
 
                 # Save segment
                 seg_name = '{:.3f}_{}_{}.wav'.format(seg['confidence'], seg_cnt, seg['audio'].split(os.sep)[-1].rsplit('.', 1)[0])
