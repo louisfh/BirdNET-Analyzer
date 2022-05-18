@@ -101,17 +101,18 @@ def saveResultFile(r, path, afile_path):
             start, end = timestamp.split('-')
             for c in r[timestamp]:
                 #if c[1] > cfg.MIN_CONFIDENCE and c[0] in cfg.CODES and (c[0] in cfg.SPECIES_LIST or len(cfg.SPECIES_LIST) == 0):
-                selection_id += 1
-                label = cfg.TRANSLATED_LABELS[cfg.LABELS.index(c[0])]
-                rstring += '{}\tSpectrogram 1\t1\t{}\t{}\t{}\t{}\t{}\t{}\t{:.4f}\n'.format(
-                    selection_id,
-                    start,
-                    end,
-                    150,
-                    12000,
-                    cfg.CODES[c[0]],
-                    label.split('_')[1],
-                    c[1])
+                if c[0] in cfg.CODES and c[0] in cfg.SPECIES_LIST:
+                    selection_id += 1
+                    label = cfg.TRANSLATED_LABELS[cfg.LABELS.index(c[0])]
+                    rstring += '{}\tSpectrogram 1\t1\t{}\t{}\t{}\t{}\t{}\t{}\t{:.4f}\n'.format(
+                        selection_id,
+                        start,
+                        end,
+                        150,
+                        12000,
+                        cfg.CODES[c[0]],
+                        label.split('_')[1],
+                        c[1])
 
             # Write result string to file
             if len(rstring) > 0:
